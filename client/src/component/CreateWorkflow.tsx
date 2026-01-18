@@ -6,15 +6,16 @@ import {
   addEdge,
 } from "@xyflow/react";
 
+export type NodeKind =
+  | "price-trigger"
+  | "timer-trigger"
+  | "hyperliquid"
+  | "backpack"
+  | "lighter";
 interface NodeType {
   data: {
     type: "action" | "trigger";
-    kind:
-      | "price-trigger"
-      | "timer-trigger"
-      | "hyperliquid"
-      | "backpack"
-      | "lighter";
+    kind: NodeKind;
   };
   id: string;
   position: { x: number; y: number };
