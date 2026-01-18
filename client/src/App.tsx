@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { CreateWorkflow } from "./components/CreateWorkflow";
+import { CreateWorkflow } from "./component/CreateWorkflow";
 import "@xyflow/react/dist/style.css";
 
 
