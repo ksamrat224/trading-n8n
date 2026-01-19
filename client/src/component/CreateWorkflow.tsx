@@ -5,6 +5,7 @@ import {
   applyEdgeChanges,
   addEdge,
 } from "@xyflow/react";
+import { TriggerSheet } from "./TriggerSheet";
 
 export type NodeKind =
   | "price-trigger"
@@ -16,10 +17,12 @@ interface NodeType {
   data: {
     type: "action" | "trigger";
     kind: NodeKind;
+    metadata: NodeMetaData;
   };
   id: string;
   position: { x: number; y: number };
 }
+export type NodeMetaData = any;
 
 interface EdgeType {
   id: string;
@@ -49,6 +52,24 @@ export function CreateWorkflow() {
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
+      {!nodes.length && (
+        <TriggerSheet
+          onSelect={(kind, metadata) => {
+            setNodes([
+              ...nodes,
+              {
+                id: Math.random().toString(),
+                data: {
+                  type: "trigger",
+                  kind,
+                  metadata,
+                },
+                position: { x: 250, y: 250 },
+              },
+            ]);
+          }}
+        />
+      )}
       <ReactFlow
         nodes={nodes}
         edges={edges}
