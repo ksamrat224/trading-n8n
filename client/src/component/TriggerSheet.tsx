@@ -2,20 +2,17 @@ import { Button } from "@/components/ui/button";
 import type { NodeKind, NodeMetaData } from "./CreateWorkflow";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -41,6 +38,9 @@ export const TriggerSheet = ({
   onSelect: (kind: NodeKind, metadata: NodeMetaData) => void;
 }) => {
   const [metadata, setMetadata] = useState({});
+  const [selectedTrigger, setSelectedTrigger] = useState(
+    SUPPORTED_TRIGGERS[0].id,
+  );
   return (
     <Sheet open={true}>
       <SheetContent>
@@ -48,7 +48,7 @@ export const TriggerSheet = ({
           <SheetTitle>Select Trigger</SheetTitle>
           <SheetDescription>
             Select the type of trigger that you need.
-            <Select>
+            <Select value={selectedTrigger} onValueChange={setSelectedTrigger}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a fruit" />
               </SelectTrigger>
@@ -57,7 +57,8 @@ export const TriggerSheet = ({
                   {SUPPORTED_TRIGGERS.map(({ id, title }) => (
                     <>
                       <SelectItem
-                        onSelect={() => onSelect(id, metadata)}
+                        key={id}
+                        onSelect={() => setSelectedTrigger(id)}
                         value={id}
                       >
                         {title}
@@ -72,7 +73,12 @@ export const TriggerSheet = ({
         </SheetHeader>
 
         <SheetFooter>
-          <Button type="submit">Create Trigger</Button>
+          <Button
+            onClick={() => onSelect(selectedTrigger as NodeKind, metadata)}
+            type="submit"
+          >
+            Create Trigger
+          </Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>

@@ -15,9 +15,10 @@ export type NodeKind =
   | "lighter";
 interface NodeType {
   data: {
-    type: "action" | "trigger";
-    kind: NodeKind;
-    metadata: NodeMetaData;
+    type: "action" | "trigger",
+    kind: NodeKind,
+    metadata: NodeMetaData,
+    label:string,
   };
   id: string;
   position: { x: number; y: number };
@@ -55,6 +56,7 @@ export function CreateWorkflow() {
       {!nodes.length && (
         <TriggerSheet
           onSelect={(kind, metadata) => {
+            alert("hi there")
             setNodes([
               ...nodes,
               {
@@ -63,6 +65,7 @@ export function CreateWorkflow() {
                   type: "trigger",
                   kind,
                   metadata,
+                  label:kind,
                 },
                 position: { x: 250, y: 250 },
               },
