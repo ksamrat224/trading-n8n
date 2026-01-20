@@ -56,11 +56,10 @@ export const TriggerSheet = ({
           <SheetDescription>
             Select the type of trigger that you need.
           </SheetDescription>
-          {/* Move trigger selection UI outside of SheetDescription to avoid <div> inside <p> */}
           <div className="mt-2 flex flex-col gap-4">
             <Select value={selectedTrigger} onValueChange={setSelectedTrigger}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select an Asset" />
+                <SelectValue placeholder="Select a Trigger" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -76,7 +75,20 @@ export const TriggerSheet = ({
                 </SelectGroup>
               </SelectContent>
             </Select>
-            {selectedTrigger === "timer" && <div></div>}
+            {selectedTrigger === "timer" && (
+              <div>
+                <div>Number of seconds after which to run the timer</div>
+                <Input
+                  value={metadata.time}
+                  onChange={(e) =>
+                    setMetadata((metadata) => ({
+                      ...metadata,
+                      time: Number(e.target.value),
+                    }))
+                  }
+                />
+              </div>
+            )}
             {selectedTrigger === "price-trigger" && (
               <div className="flex flex-col gap-2">
                 <label htmlFor="price-input">Price:</label>
@@ -116,7 +128,7 @@ export const TriggerSheet = ({
                   }
                 >
                   <SelectTrigger id="asset-select" className="w-full">
-                    <SelectValue placeholder="Select a Trigger" />
+                    <SelectValue placeholder="Select an Asset" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
