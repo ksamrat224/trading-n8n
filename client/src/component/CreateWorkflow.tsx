@@ -6,19 +6,25 @@ import {
   addEdge,
 } from "@xyflow/react";
 import { TriggerSheet } from "./TriggerSheet";
+import { PriceTrigger } from "@/nodes/triggers/PriceTrigger";
+import { Timer } from "@/nodes/triggers/Timer";
+
+const nodeTypes = {
+  "price-trigger": PriceTrigger,
+  "timer": Timer,
+};
 
 export type NodeKind =
   | "price-trigger"
-  | "timer-trigger"
+  | "timer"
   | "hyperliquid"
   | "backpack"
   | "lighter";
 interface NodeType {
+  type: NodeKind;
   data: {
-    type: "action" | "trigger",
-    kind: NodeKind,
-    metadata: NodeMetaData,
-    label:string,
+    kind: "action" | "trigger";
+    metadata: NodeMetaData;
   };
   id: string;
   position: { x: number; y: number };
@@ -55,17 +61,16 @@ export function CreateWorkflow() {
     <div style={{ width: "100vw", height: "100vh" }}>
       {!nodes.length && (
         <TriggerSheet
-          onSelect={(kind, metadata) => {
-            alert("hi there")
+          onSelect={(type, metadata) => {
+            alert("hi there");
             setNodes([
               ...nodes,
               {
                 id: Math.random().toString(),
+                type,
                 data: {
-                  type: "trigger",
-                  kind,
+                  kind: "trigger",
                   metadata,
-                  label:kind,
                 },
                 position: { x: 250, y: 250 },
               },
@@ -74,6 +79,7 @@ export function CreateWorkflow() {
         />
       )}
       <ReactFlow
+        nodeTypes={nodeTypes}
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}

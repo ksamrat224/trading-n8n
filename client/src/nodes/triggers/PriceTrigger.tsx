@@ -18,8 +18,8 @@ export function PriceTrigger({
 }) {
   return (
     <div className="p-4 border">
-      {data.metadata.asset}
-      {data.metadata.price}
+      <div>{data.metadata.asset}</div>
+      <div>{data.metadata.price}</div>
       <Handle type="source" position={Position.Right}></Handle>
     </div>
   );
