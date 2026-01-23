@@ -11,7 +11,7 @@ import { Timer } from "@/nodes/triggers/Timer";
 
 const nodeTypes = {
   "price-trigger": PriceTrigger,
-  "timer": Timer,
+  timer: Timer,
 };
 
 export type NodeKind =
@@ -56,6 +56,12 @@ export function CreateWorkflow() {
       setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
     [],
   );
+  const onConnectEnd = useCallback((params, connectionInfo) => {
+    if (!connectionInfo.isValis) {
+      console.log(connectionInfo.fromNode.id);
+      console.log(connectionInfo.fromNode.to);
+    }
+  }, []);
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
@@ -85,6 +91,7 @@ export function CreateWorkflow() {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onConnectEnd={onConnectEnd}
         fitView
       />
     </div>

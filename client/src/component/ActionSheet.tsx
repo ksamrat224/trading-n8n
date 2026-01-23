@@ -20,34 +20,34 @@ import { useState } from "react";
 import type { PriceTriggerNodeMetadata } from "@/nodes/triggers/PriceTrigger";
 import type { TimerNodeMetadata } from "@/nodes/triggers/Timer";
 import { Input } from "@/components/ui/input";
+import type { TradingMetaData } from "@/nodes/actions/Lighter";
+import { SUPPORTED_ASSETS } from "./TriggerSheet";
 
-const SUPPORTED_TRIGGERS = [
+const SUPPORTED_ACTIONS = [
   {
-    id: "timer",
-    title: "Timer",
-    description: "Run this trigger every x seconds/minutes.",
+    id: "hyperliquid",
+    title: "Hyperliquid",
+    description: "Place a trade on hyper liquid.",
   },
   {
-    id: "price-trigger",
-    title: "Price Trigger",
-    description:
-      "Runs whenever the trigger  price goes above or below a certain number for an asset.",
+    id: "lighter",
+    title: "Lighter",
+    description: "Place a trade on lighter.",
+  },
+  {
+    id: "backpack",
+    title: "Backpack",
+    description: "Place a trade on backpack.",
   },
 ];
-
-export const SUPPORTED_ASSETS = ["SOL", "BTC", "ETH", "USDC", "USDT"];
 
 export const TriggerSheet = ({
   onSelect,
 }: {
   onSelect: (kind: NodeKind, metadata: NodeMetaData) => void;
 }) => {
-  const [metadata, setMetadata] = useState<
-    PriceTriggerNodeMetadata | TimerNodeMetadata
-  >({ time: 3600 });
-  const [selectedTrigger, setSelectedTrigger] = useState(
-    SUPPORTED_TRIGGERS[0].id,
-  );
+  const [metadata, setMetadata] = useState<TradingMetaData | null>(null);
+  const [selectedAction, setSelectedAction] = useState(SUPPORTED_ACTIONS[0].id);
   return (
     <Sheet open={true}>
       <SheetContent>
@@ -57,16 +57,16 @@ export const TriggerSheet = ({
             Select the type of trigger that you need.
           </SheetDescription>
           <div className="mt-2 flex flex-col gap-4">
-            <Select value={selectedTrigger} onValueChange={setSelectedTrigger}>
+            <Select value={selectedAction} onValueChange={setSelectedAction}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a Trigger" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {SUPPORTED_TRIGGERS.map(({ id, title }) => (
+                  {SUPPORTED_ACTIONS.map(({ id, title }) => (
                     <SelectItem
                       key={id}
-                      onSelect={() => setSelectedTrigger(id)}
+                      onSelect={() => setSelectedAction(id)}
                       value={id}
                     >
                       {title}
@@ -75,7 +75,7 @@ export const TriggerSheet = ({
                 </SelectGroup>
               </SelectContent>
             </Select>
-            {selectedTrigger === "timer" && (
+            {selectedAction === "timer" && (
               <div>
                 <div>Number of seconds after which to run the timer</div>
                 <Input
@@ -89,7 +89,7 @@ export const TriggerSheet = ({
                 />
               </div>
             )}
-            {selectedTrigger === "price-trigger" && (
+            {selectedAction === "price-trigger" && (
               <div className="flex flex-col gap-2">
                 <label htmlFor="price-input">Price:</label>
                 <Input
@@ -105,7 +105,7 @@ export const TriggerSheet = ({
                     )
                   }
                   value={
-                    selectedTrigger === "price-trigger" && "price" in metadata
+                    selectedAction === "price-trigger" && "price" in metadata
                       ? (metadata.price ?? "")
                       : ""
                   }
@@ -113,7 +113,7 @@ export const TriggerSheet = ({
                 <label htmlFor="asset-select">Asset:</label>
                 <Select
                   value={
-                    selectedTrigger === "price-trigger" && "asset" in metadata
+                    selectedAction === "price-trigger" && "asset" in metadata
                       ? metadata.asset
                       : undefined
                   }
@@ -146,7 +146,7 @@ export const TriggerSheet = ({
         </SheetHeader>
         <SheetFooter>
           <Button
-            onClick={() => onSelect(selectedTrigger as NodeKind, metadata)}
+            onClick={() => onSelect(selectedAction as NodeKind, metadata)}
             type="submit"
           >
             Create Trigger
