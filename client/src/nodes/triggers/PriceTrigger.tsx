@@ -3,7 +3,7 @@ import { Handle, Position } from "@xyflow/react";
 //asset => SOL
 //price => 150000000
 //decimals => 6
-export type PriceTriggerNodeMetadata = {
+export type PriceTriggerMetadata = {
   asset: string;
   price: number;
   decimals: number;
@@ -13,7 +13,7 @@ export function PriceTrigger({
   data,
   isConnectable,
 }: {
-  data: { metadata: PriceTriggerNodeMetadata };
+  data: { metadata: PriceTriggerMetadata };
   isConnectable: boolean;
 }) {
   return (

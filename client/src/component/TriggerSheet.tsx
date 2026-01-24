@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
-import type { PriceTriggerNodeMetadata } from "@/nodes/triggers/PriceTrigger";
+import type { PriceTriggerMetadata } from "@/nodes/triggers/PriceTrigger";
 import type { TimerNodeMetadata } from "@/nodes/triggers/Timer";
 import { Input } from "@/components/ui/input";
 
@@ -43,7 +43,7 @@ export const TriggerSheet = ({
   onSelect: (kind: NodeKind, metadata: NodeMetaData) => void;
 }) => {
   const [metadata, setMetadata] = useState<
-    PriceTriggerNodeMetadata | TimerNodeMetadata
+    PriceTriggerMetadata | TimerNodeMetadata
   >({ time: 3600 });
   const [selectedTrigger, setSelectedTrigger] = useState(
     SUPPORTED_TRIGGERS[0].id,
@@ -101,7 +101,7 @@ export const TriggerSheet = ({
                         ({
                           ...m,
                           price: Number(e.target.value),
-                        }) as PriceTriggerNodeMetadata,
+                        }) as PriceTriggerMetadata,
                     )
                   }
                   value={
@@ -123,7 +123,7 @@ export const TriggerSheet = ({
                         ({
                           ...metadata,
                           asset: value,
-                        }) as PriceTriggerNodeMetadata,
+                        }) as PriceTriggerMetadata,
                     )
                   }
                 >

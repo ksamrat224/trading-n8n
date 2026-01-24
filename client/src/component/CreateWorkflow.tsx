@@ -6,12 +6,22 @@ import {
   addEdge,
 } from "@xyflow/react";
 import { TriggerSheet } from "./TriggerSheet";
-import { PriceTrigger } from "@/nodes/triggers/PriceTrigger";
-import { Timer } from "@/nodes/triggers/Timer";
+import {
+  PriceTrigger,
+  type PriceTriggerMetadata,
+} from "@/nodes/triggers/PriceTrigger";
+import { Timer, type TimerNodeMetadata } from "@/nodes/triggers/Timer";
+import { Lighter, type TradingMetaData } from "@/nodes/actions/Lighter";
+import { ActionSheet } from "./ActionSheet";
+import { Hyperliquid } from "@/nodes/actions/Hyperliquid";
+import { Backpack } from "@/nodes/actions/Backpack";
 
 const nodeTypes = {
   "price-trigger": PriceTrigger,
   timer: Timer,
+  lighter: Lighter,
+  hyperliquid: Hyperliquid,
+  backpack: Backpack,
 };
 
 export type NodeKind =
@@ -29,7 +39,10 @@ interface NodeType {
   id: string;
   position: { x: number; y: number };
 }
-export type NodeMetaData = any;
+export type NodeMetaData =
+  | TradingMetaData
+  | PriceTriggerMetadata
+  | TimerNodeMetadata;
 
 interface EdgeType {
   id: string;
@@ -40,6 +53,10 @@ interface EdgeType {
 export function CreateWorkflow() {
   const [nodes, setNodes] = useState<NodeType[]>([]);
   const [edges, setEdges] = useState<EdgeType[]>([]);
+  const [selectedAction, setSelectedAction] = useState<{
+    position: { x: number; y: number };
+    startingNodeId: string;
+  } | null>(null);
 
   const onNodesChange = useCallback(
     (changes: any) =>
@@ -56,8 +73,16 @@ export function CreateWorkflow() {
       setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
     [],
   );
+  const POSITION_OFFSET = 20;
   const onConnectEnd = useCallback((params, connectionInfo) => {
-    if (!connectionInfo.isValis) {
+    if (!connectionInfo.isValid) {
+      setSelectedAction({
+        startingNodeId: connectionInfo.fromNode.id,
+        position: {
+          x: connectionInfo.from.x + POSITION_OFFSET,
+          y: connectionInfo.from.y + POSITION_OFFSET,
+        },
+      });
       console.log(connectionInfo.fromNode.id);
       console.log(connectionInfo.fromNode.to);
     }
@@ -84,6 +109,35 @@ export function CreateWorkflow() {
           }}
         />
       )}
+      {selectedAction && (
+        <ActionSheet
+          onSelect={(type, metadata) => {
+            const nodeId = Math.random().toString();
+            setNodes([
+              ...nodes,
+              {
+                id: nodeId,
+                type,
+                data: {
+                  kind: "action",
+                  metadata,
+                },
+                position: selectedAction.position,
+              },
+            ]);
+            setEdges([
+              ...edges,
+              {
+                id: Math.random().toString(),
+                source: selectedAction.startingNodeId,
+                target: nodeId,
+              },
+            ]);
+            setSelectedAction(null);
+          }}
+        />
+      )}
+
       <ReactFlow
         nodeTypes={nodeTypes}
         nodes={nodes}
